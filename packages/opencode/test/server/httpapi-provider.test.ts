@@ -116,7 +116,11 @@ describe("provider HttpApi", () => {
           method: 0,
           headers,
         })
-        expect(api).toEqual({ status: 200, body: "" })
+        // method 0 (api-key style) — authorize() resolves with no further
+        // redirect; #26474 changed the wire format to a JSON `null` body so
+        // clients can `.json()` parse uniformly instead of getting an empty
+        // body that throws.
+        expect(api).toEqual({ status: 200, body: "null" })
 
         const oauth = yield* requestAuthorize({
           app: server,
